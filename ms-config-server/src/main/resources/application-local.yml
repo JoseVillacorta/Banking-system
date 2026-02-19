@@ -1,0 +1,29 @@
+
+spring:
+  cloud:
+    config:
+      server:
+        # Repositorio Git local para desarrollo
+        git:
+          uri: file:///d:/Banking-system/banking-config-repo
+          default-label: main
+          clone-on-start: true
+          search-paths: # Permite organizar configs en subcarpetas
+            - '{application}'
+            - '{application}/{profile}'
+
+          # Forzar actualizacion en cada petición
+          force-pull: true
+          refresh-rate: 0
+
+      # Permitir sobrescribir configuraciones
+      override-none: true
+
+# Logging para debugging
+logging:
+  level:
+    root: INFO
+    org.springframework.cloud.config: INFO
+
+# Desactivar cache para ver cambios inmediatamente
+spring.cloud.config.server.git.skip-ssl-validation: true

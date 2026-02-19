@@ -1,0 +1,27 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: ms-config-server
+  profiles:
+    active: local
+
+# Configuracion de Monitoreo y Gestion para los perfiles
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,refresh,env,beans
+  endpoint:
+    health:
+      show-details: always
+
+# Informacion del servicio
+info:
+  app:
+    name: ${spring.application.name}
+    description: Banking System Config Server
+    version: 0.0.1-SNAPSHOT
+
+
