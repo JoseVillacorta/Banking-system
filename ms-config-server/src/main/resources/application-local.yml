@@ -1,3 +1,5 @@
+server:
+  port: 8888
 
 spring:
   cloud:
@@ -5,12 +7,15 @@ spring:
       server:
         # Repositorio Git local para desarrollo
         git:
-          uri: file:///d:/Banking-system/banking-config-repo
+          uri: file:///${PROPERTIES_DIRECTORY}
           default-label: main
           clone-on-start: true
+          timeout: 5
           search-paths: # Permite organizar configs en subcarpetas
             - '{application}'
             - '{application}/{profile}'
+          #username: ${GIT_USER}
+          #password: ${GIT_PASSWORD}
 
           # Forzar actualizacion en cada petición
           force-pull: true
@@ -19,11 +24,23 @@ spring:
       # Permitir sobrescribir configuraciones
       override-none: true
 
+  security:
+    user:
+      name: admin
+      password: local123
+
 # Logging para debugging
 logging:
   level:
     root: INFO
-    org.springframework.cloud.config: INFO
+    org.springframework.cloud.config: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
+  pattern:
+    console: '%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n'
+    file: '%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n'
+
+debug: false
 
 # Desactivar cache para ver cambios inmediatamente
 spring.cloud.config.server.git.skip-ssl-validation: true

@@ -1,0 +1,15 @@
+spring:
+  # 1. Configuración del Microservicio
+  application:
+    # Este nombre debe coincidir con el nombre del archivo de propiedades en tu config-repo (ej. product-service-dev.yml)
+    name: registry-service
+  config:
+    import: "optional:configserver:http://localhost:8888" # La forma moderna de importar config
+  cloud:
+    config:
+      # Perfil que deseas cargar (ej. dev, pord, local)
+      profile: dev
+      # Etiqueta (branch) del repositorio Git a usar (usa el que definiste en el Server Config)
+      label: main # Puede ser 'main', 'master' o la rama que uses
+      username: admin      # Respaldo para algunas versiones
+      password: local123   # Respaldo para algunas versiones

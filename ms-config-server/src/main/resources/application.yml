@@ -1,11 +1,9 @@
-server:
-  port: 8888
 
 spring:
   application:
     name: ms-config-server
   profiles:
-    active: local
+    active: ${SPRING_PROFILE:dev}
 
 # Configuracion de Monitoreo y Gestion para los perfiles
 management:
