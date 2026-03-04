@@ -5,7 +5,7 @@ eureka:
   instance:
     hostname: localhost
   client:
-    # No se registra a sí mismo, el ES el servidor
+    # No se registra a sí mismo, el es el servidor
     register-with-eureka: false
     # No necesita buscar a otros servidores
     fetch-registry: false

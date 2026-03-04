@@ -8,5 +8,14 @@ spring:
     gateway:
       discovery:
         locator:
-          enabled: false
+          enabled: true
+          lower-case-service-id: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://admin:local123@localhost:8761/eureka/
+  instance:
+    prefer-ip-address: true
+    
           
