@@ -8,7 +8,7 @@ spring:
     gateway:
       discovery:
         locator:
-          enabled: true
+          enabled: false
           lower-case-service-id: true
       routes:
         - id: ms-customer
@@ -17,6 +17,12 @@ spring:
             - Path=/ms-customer/**
           filters:
             - StripPrefix=1 # Elimina el prefijo /ms-customer antes de enviar la peticion al ms
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,refresh,gateway
 
 eureka:
   client:
