@@ -10,11 +10,18 @@ spring:
         locator:
           enabled: true
           lower-case-service-id: true
+      routes:
+        - id: ms-customer
+          uri: lb://ms-customer
+          predicates:
+            - Path=/ms-customer/**
+          filters:
+            - StripPrefix=1 # Elimina el prefijo /ms-customer antes de enviar la peticion al ms
 
 eureka:
   client:
     service-url:
-      defaultZone: http://admin:local123@localhost:8761/eureka/
+      defaultZone: http://localhost:8761/eureka/
   instance:
     prefer-ip-address: true
     
