@@ -3,7 +3,7 @@ spring:
     name: ms-customer
   # Configuracion base de datos reactiva
   r2dbc:
-    url: r2dbc:postgresql://localhost:5432/db_customer
+    url: r2dbc:postgresql://localhost:5432/db_customer_dev
     username: postgres
     password: admin
   

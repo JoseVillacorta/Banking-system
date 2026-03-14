@@ -1,0 +1,43 @@
+services:
+  # Base de datos para el Microservicio de Clientes
+  db_customer:
+    image: postgres:15
+    container_name: banking-db-customer
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: db_customer_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data_customer:/var/lib/postgresql/data
+      - ./ms-customer/database/script.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - banking-network
+
+  # Administrador Visual de todas las bases de datos
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: banking-pgadmin
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@banking.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    depends_on:
+      - db_customer
+    networks:
+      - banking-network
+
+networks:
+  banking-network:
+    driver: bridge
+
+volumes:
+  postgres_data_customer:

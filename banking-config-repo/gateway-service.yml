@@ -6,6 +6,7 @@ spring:
     name: gateway-service
   cloud:
     gateway:
+      enabled: true 
       discovery:
         locator:
           enabled: false
@@ -22,8 +23,11 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,refresh,gateway
-
+        include: "*"
+  endpoint:
+    gateway:
+      enabled: true
+      
 eureka:
   client:
     service-url:
