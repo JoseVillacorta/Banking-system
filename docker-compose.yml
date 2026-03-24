@@ -21,6 +21,28 @@ services:
     networks:
       - banking-network
 
+  #Base de datos para el Microservicio de Cuentas
+  db_account:
+    image: postgres:15
+    container_name: banking-db-account
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: db_account_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_data_account:/var/lib/postgresql/data
+      - ./ms-account/database/script.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - banking-network
+
   # Administrador Visual de todas las bases de datos
   pgadmin:
     image: dpage/pgadmin4
@@ -32,6 +54,7 @@ services:
       PGADMIN_DEFAULT_PASSWORD: admin
     depends_on:
       - db_customer
+      - db_account
     networks:
       - banking-network
 
@@ -41,3 +64,4 @@ networks:
 
 volumes:
   postgres_data_customer:
+  postgres_data_account:
