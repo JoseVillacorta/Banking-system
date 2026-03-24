@@ -43,6 +43,28 @@ services:
     networks:
       - banking-network
 
+  # Base de datos para el Microservicio de Transacciones
+  db_transaction:
+    image: postgres:15
+    container_name: banking-db-transaction
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: db_transaction_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5435:5432"
+    volumes:
+      - postgres_data_transaction:/var/lib/postgresql/data
+      - ./ms-transaction/database/script.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - banking-network
+
   # Administrador Visual de todas las bases de datos
   pgadmin:
     image: dpage/pgadmin4
@@ -55,6 +77,7 @@ services:
     depends_on:
       - db_customer
       - db_account
+      - db_transaction
     networks:
       - banking-network
 
@@ -65,3 +88,4 @@ networks:
 volumes:
   postgres_data_customer:
   postgres_data_account:
+  postgres_data_transaction:
