@@ -7,6 +7,17 @@ spring:
   cloud:
     gateway:
       enabled: true 
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*" 
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
       discovery:
         locator:
           enabled: false
@@ -15,9 +26,15 @@ spring:
         - id: ms-customer
           uri: lb://ms-customer
           predicates:
-            - Path=/ms-customer/**
+            - Path=/api/v1/customers/**
           filters:
-            - StripPrefix=1 # Elimina el prefijo /ms-customer antes de enviar la peticion al ms
+            - StripPrefix=0 # Elimina el prefijo /ms-customer antes de enviar la peticion al ms
+        - id: ms-account
+          uri: lb://ms-account
+          predicates:
+            - Path=/api/v1/accounts/**
+          filters:
+            - StripPrefix=0
 
 management:
   endpoints:
