@@ -81,6 +81,130 @@ services:
     networks:
       - banking-network
 
+  # Infraestructura
+  ms-config-server:
+    build:
+      context: ./ms-config-server
+      dockerfile: Dockerfile
+    container_name: banking-config-server
+    ports:
+      - "8888:8888"
+    environment:
+      - SPRING_PROFILES_ACTIVE=local
+      - PROPERTIES_DIRECTORY=/app/config-repo
+    volumes:
+      - ./banking-config-repo:/app/config-repo
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8888/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - banking-network
+
+  registry-service:
+    build:
+      context: ./registry-service
+      dockerfile: Dockerfile
+    container_name: banking-registry-service
+    ports:
+      - "8761:8761"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      # Le decimos al microservicio dónde encontrar al Config Server dentro de la red de Docker
+      - SPRING_CONFIG_IMPORT=configserver:http://admin:local123@banking-config-server:8888
+    depends_on:
+      ms-config-server:
+        condition: service_healthy
+    networks:
+      - banking-network
+
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    container_name: banking-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      # IMPORTANTE: Cambiamos localhost por los nombres de los contenedores
+      - SPRING_CLOUD_CONFIG_URI=http://admin:local123@banking-config-server:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://banking-registry-service:8761/eureka/
+    depends_on:
+      ms-config-server:
+        condition: service_healthy
+      registry-service:
+        condition: service_started
+    networks:
+      - banking-network
+
+  ms-customer:
+    build:
+      context: ./ms-customer
+      dockerfile: Dockerfile
+    container_name: banking-ms-customer
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_CONFIG_IMPORT=configserver:http://admin:local123@banking-config-server:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://banking-registry-service:8761/eureka/
+      - SPRING_R2DBC_URL=r2dbc:postgresql://banking-db-customer:5432/db_customer_dev
+    depends_on:
+      db_customer:
+        condition: service_healthy
+      ms-config-server:
+        condition: service_healthy
+      registry-service:
+        condition: service_started
+    networks:
+      - banking-network
+
+  ms-account:
+    build:
+      context: ./ms-account
+      dockerfile: Dockerfile
+    container_name: banking-ms-account
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - CONFIG_SERVER_URL=http://admin:local123@banking-config-server:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://banking-registry-service:8761/eureka/
+      - SPRING_R2DBC_URL=r2dbc:postgresql://banking-db-account:5432/db_account_dev
+    depends_on:
+      db_account:
+        condition: service_healthy
+      ms-config-server:
+        condition: service_healthy
+      registry-service:
+        condition: service_started
+    networks:
+      - banking-network
+
+  ms-transaction:
+    build:
+      context: ./ms-transaction
+      dockerfile: Dockerfile
+    container_name: banking-ms-transaction
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - CONFIG_SERVER_URL=http://admin:local123@banking-config-server:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://banking-registry-service:8761/eureka/
+      - SPRING_R2DBC_URL=r2dbc:postgresql://banking-db-transaction:5432/db_transaction_dev
+    depends_on:
+      db_transaction:
+        condition: service_healthy
+      ms-config-server:
+        condition: service_healthy
+      registry-service:
+        condition: service_started
+    networks:
+      - banking-network
+
 networks:
   banking-network:
     driver: bridge
