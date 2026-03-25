@@ -41,6 +41,16 @@ spring:
             - Path=/api/v1/transactions/**
           filters:
             - StripPrefix=0
+  # --- BLOQUE DE SEGURIDAD (Esto es lo que faltaba) ---
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # Usamos host.docker.internal para que el Gateway (en Docker)
+          # pueda ver al oauth-server (en tu Windows)
+          issuer-uri: http://host.docker.internal:9000
+  # ---------------------------------------------------
+
 
 management:
   endpoints:
@@ -54,7 +64,7 @@ management:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://banking-registry-service:8761/eureka/
   instance:
     prefer-ip-address: true
     
