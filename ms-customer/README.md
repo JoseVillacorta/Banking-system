@@ -52,10 +52,8 @@ docker-compose up -d ms-customer
 - **Listar todos:** `GET /api/v1/customers`
 - **Buscar por ID:** `GET /api/v1/customers/{id}`
 - **Buscar por documento:** `GET /api/v1/customers/document/{nro_documento}`
+- **Buscar por zona:** `GET /api/v1/customers/zone/{zoneId}`
 - **Crear cliente:** `POST /api/v1/customers`
 - **Actualizar:** `PUT /api/v1/customers/{id}`
 - **Eliminar:** `DELETE /api/v1/customers/{id}`
 
-### Documentación
-Puedes encontrar la especificación OpenAPI detallada en:
-- `swagger/customer-swagger.yaml`
