@@ -65,6 +65,50 @@ services:
     networks:
       - banking-network
 
+  # Base de datos para el Microservicio de Préstamos
+  db_loan:
+    image: postgres:15
+    container_name: banking-db-loan
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: db_loan_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5436:5432"
+    volumes:
+      - postgres_data_loan:/var/lib/postgresql/data
+      - ./ms-loan/database/script.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - banking-network
+
+  # Base de datos para el Microservicio de Logística
+  db_logistics:
+    image: postgres:15
+    container_name: banking-db-logistics
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: db_logistics_dev
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5437:5432" # Puerto 5437 para no chocar
+    volumes:
+      - postgres_data_logistics:/var/lib/postgresql/data
+      - ./ms-logistics/database/script.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - banking-network
+
   # Administrador Visual de todas las bases de datos
   pgadmin:
     image: dpage/pgadmin4
@@ -205,6 +249,69 @@ services:
     networks:
       - banking-network
 
+  ms-loan:
+    build:
+      context: ./ms-loan
+      dockerfile: Dockerfile
+    container_name: banking-ms-loan
+    ports:
+      - "8084:8084"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - CONFIG_SERVER_URL=http://admin:local123@banking-config-server:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://banking-registry-service:8761/eureka/
+      - SPRING_R2DBC_URL=r2dbc:postgresql://banking-db-loan:5432/db_loan_dev
+    depends_on:
+      db_loan:
+        condition: service_healthy
+      ms-config-server:
+        condition: service_healthy
+      registry-service:
+        condition: service_started
+    networks:
+      - banking-network
+
+  ms-logistics:
+    build:
+      context: ./ms-logistics
+      dockerfile: Dockerfile
+    container_name: banking-ms-logistics
+    ports:
+      - "8085:8085"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - CONFIG_SERVER_URL=http://admin:local123@banking-config-server:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://banking-registry-service:8761/eureka/
+      - SPRING_R2DBC_URL=r2dbc:postgresql://banking-db-logistics:5432/db_logistics_dev
+    depends_on:
+      db_logistics:
+        condition: service_healthy
+      ms-config-server:
+        condition: service_healthy
+      registry-service:
+        condition: service_started
+    networks:
+      - banking-network
+
+  ms-report:
+    build:
+      context: ./ms-report
+      dockerfile: Dockerfile
+    container_name: banking-ms-report
+    ports:
+      - "8086:8086"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - CONFIG_SERVER_URL=http://admin:local123@banking-config-server:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://banking-registry-service:8761/eureka/
+    depends_on:
+      ms-config-server:
+        condition: service_healthy
+      registry-service:
+        condition: service_started
+    networks:
+      - banking-network
+
 networks:
   banking-network:
     driver: bridge
@@ -213,3 +320,5 @@ volumes:
   postgres_data_customer:
   postgres_data_account:
   postgres_data_transaction:
+  postgres_data_loan:
+  postgres_data_logistics:
