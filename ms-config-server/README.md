@@ -29,16 +29,6 @@ Este microservicio utiliza **Spring Cloud Config** para actuar como un repositor
 - **JDK 21** instalado.
 - **Docker** (opcional, para ejecución en contenedores).
 
-### Pasos para ejecución local (Gradle)
-1. Navega a la carpeta del proyecto: `cd ms-config-server`
-2. Define la ruta absoluta de tu repositorio de configuraciones en una variable de entorno:
-   - Windows: `set PROPERTIES_DIRECTORY=C:/ruta/a/banking-config-repo`
-   - Linux/Mac: `export PROPERTIES_DIRECTORY=/ruta/a/banking-config-repo`
-3. Ejecuta la aplicación:
-   ```bash
-   ./gradlew bootRun
-   ```
-
 ### Pasos para ejecución con Docker
 Si estás usando el `docker-compose.yml` en la raíz del proyecto:
 ```bash
