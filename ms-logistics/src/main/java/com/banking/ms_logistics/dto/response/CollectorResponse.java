@@ -1,0 +1,17 @@
+package com.banking.ms_logistics.dto.response;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class CollectorResponse {
+    private Long id;
+    private String fullName;
+    private String documentNumber;
+    private String status;
+}
