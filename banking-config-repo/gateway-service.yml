@@ -41,16 +41,24 @@ spring:
             - Path=/api/v1/transactions/**
           filters:
             - StripPrefix=0
-  # --- BLOQUE DE SEGURIDAD (Esto es lo que faltaba) ---
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          # Usamos host.docker.internal para que el Gateway (en Docker)
-          # pueda ver al oauth-server (en tu Windows)
-          issuer-uri: http://host.docker.internal:9000
-  # ---------------------------------------------------
-
+        - id: ms-loan
+          uri: lb://ms-loan
+          predicates:
+            - Path=/api/v1/loans/**
+          filters:
+            - StripPrefix=0
+        - id: ms-logistics
+          uri: lb://ms-logistics
+          predicates:
+            - Path=/api/v1/logistics/**
+          filters:
+            - StripPrefix=0
+        - id: ms-report
+          uri: lb://ms-report
+          predicates:
+            - Path=/api/v1/reports/**
+          filters:
+            - StripPrefix=0
 
 management:
   endpoints:

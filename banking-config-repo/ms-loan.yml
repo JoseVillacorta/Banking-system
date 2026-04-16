@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: ms-loan
+  r2dbc:
+    url: r2dbc:postgresql://banking-db-loan:5432/db_loan_dev
+    username: postgres
+    password: admin
+    
+server:
+  port: 8084
+logging:
+  level:
+    org.springframework.r2dbc: DEBUG
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,refresh
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://banking-registry-service:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
+
+

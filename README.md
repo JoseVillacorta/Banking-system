@@ -19,6 +19,9 @@ Para más detalles sobre cada módulo, consulta su propia documentación:
 - **[Customer Service](./ms-customer/README.md):** Gestión de identidad de clientes.
 - **[Account Service](./ms-account/README.md):** Administración de cuentas bancarias.
 - **[Transaction Service](./ms-transaction/README.md):** Registro de movimientos financieros.
+- **[Loan Service](./ms-loan/README.md):** Gestión de préstamos e intereses.
+- **[Logistics Service](./ms-logistics/README.md):** Optimización de rutas de entrega.
+- **[Report Service](./ms-report/README.md):** Generación de documentos y hojas de cobranza.
 - **[Config Repository](./banking-config-repo/README.md):** Almacén de archivos de propiedades.
 
 ### Tecnologías Core

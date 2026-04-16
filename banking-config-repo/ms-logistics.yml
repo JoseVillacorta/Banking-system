@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: ms-logistics
+  r2dbc:
+    url: r2dbc:postgresql://banking-db-logistics:5432/db_logistics_dev
+    username: postgres
+    password: admin
+
+server:
+  port: 8085
+logging:
+  level:
+    org.springframework.r2dbc: DEBUG
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,refresh
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://banking-registry-service:8761/eureka/
+  instance:
+    prefer-ip-address: true

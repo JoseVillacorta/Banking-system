@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: ms-report
+
+server:
+  port: 8086
+logging:
+  level:
+    org.springframework.r2dbc: DEBUG
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,refresh
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://banking-registry-service:8761/eureka/
+  instance:
+    prefer-ip-address: true
+
