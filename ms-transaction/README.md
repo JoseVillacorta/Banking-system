@@ -37,6 +37,13 @@ El **Transaction Microservice** funciona de manera asíncrona para registrar lo 
    ./gradlew bootRun
    ```
 
+### Pasos para ejecución local (Gradle)
+1. Navega a la carpeta: `cd ms-transaction`
+2. Ejecuta:
+   ```bash
+   ./gradlew bootRun
+   ```
+
 ### Pasos para ejecución con Docker
 ```bash
 docker-compose up -d ms-transaction
@@ -50,7 +57,4 @@ docker-compose up -d ms-transaction
 - **Registrar Transferencia:** `POST /api/v1/transactions`
 - **Consultar Movimientos:** `GET /api/v1/transactions/statement/{accountId}`
 
-### Documentación API
-Puedes ver los detalles técnicos en:
-- `swagger/transaction-swagger.yaml`
 
